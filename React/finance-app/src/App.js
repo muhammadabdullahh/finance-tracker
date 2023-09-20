@@ -41,17 +41,24 @@ const App = () => {
     });
   };
 
-  return (
-    <div>
-      <nav className="navbar navbar-dark bg-primary">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="#">
-            Finance Tracker
-          </a>
-        </div>
-      </nav>
+  const handleDelete = async (transactionID) => {
+    try {
+      await api.delete(`/transactions/${transactionID}`);
+      fetchTransactions();
+    } catch (error) {
+      console.error("Error deleting transaction:", error);
+    };
+  };
 
-      <div className="container">
+  return (
+    <div className="bg-light card m-3 rounded-4">
+      <div className="m-3 rounded-3">
+        <h1 className="text-center m-2 fw-bold">
+          Finance Tracker
+        </h1>
+      </div>
+
+      <div className="container-fluid">
         <form onSubmit={handleFormSubmit}>
 
           <div className="mb-3 mt-3">
@@ -77,9 +84,9 @@ const App = () => {
 
           <div className="mb-3">
             <label htmlFor="is_income" className="form-label">
-              Income?
+              Is This Income?
             </label>
-            <input type="checkbox" id="is_income" name="is_income" onChange={handleInputChange} value={formData.is_income}/>
+            <input className="ms-2" type="checkbox" id="is_income" name="is_income" onChange={handleInputChange} value={formData.is_income}/>
           </div>
 
           <div className="mb-3">
@@ -89,7 +96,7 @@ const App = () => {
             <input type="text" className="form-control" id="date" name="date" onChange={handleInputChange} value={formData.date}/>
           </div>
 
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-success mb-3">
             Submit
           </button>
 
@@ -113,6 +120,11 @@ const App = () => {
                 <td>{transaction.description}</td>
                 <td>{transaction.is_income ? 'Yes' : 'No'}</td>
                 <td>{transaction.date}</td>
+                <td>
+                  <button onClick={() => handleDelete(transaction.id)} className="btn btn-danger btn-sm">
+                    X
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
